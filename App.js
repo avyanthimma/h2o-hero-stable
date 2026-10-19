@@ -25,7 +25,7 @@ import { createClient } from '@supabase/supabase-js';
 
 const SUPABASE_URL = 'https://panznaqniusyrglyozhn.supabase.co';
 const SUPABASE_KEY =
-  'PASTE_YOUR_EXISTING_SUPABASE_PUBLIC_KEY_HERE';
+  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBhbnpuYXFuaXVzeXJnbHlvemhuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTE2NzI0MjQsImV4cCI6MjEwNzI0ODQyNH0.sJFoujIyBpIjqwufbnPFyBTi8Mui8lXeUNZpQ50zzj4';
 
 const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
 
@@ -255,47 +255,64 @@ function MapPicker({ onSelect }) {
 function HomeScreen() {
   const navigation = useNavigation();
 
-  // Original home screen preserved.
+  const steps = [
+    { number: '1', title: 'Spot', text: 'Notice trash, pollution, or damage' },
+    { number: '2', title: 'Document', text: 'Add a photo and mark the spot' },
+    { number: '3', title: 'Share', text: 'Neighbors upvote what matters' },
+  ];
+
   return (
     <View style={styles.screen}>
-      <ScrollView contentContainerStyle={styles.scrollContainer}>
-        <View style={styles.contentWrapper}>
-          <Text style={styles.mainTitle}>H2O HERO</Text>
-
-          <Text style={styles.subTitle}>
-            Lake Activity Reporting App
-          </Text>
-
-          <Text style={styles.paragraph}>
-            H2O HERO helps you report problems in local rivers,
-            lakes, and streams. Spot trash, pollution, or damaged
-            equipment? Submit a report to help your community
-            identify problems affecting local waterways.
-          </Text>
-
+      <ScrollView contentContainerStyle={styles.homeScroll}>
+        <View style={styles.hero}>
           <Image
             source={{
               uri: 'https://wanderlustcraze.com/wp-content/uploads/2026/04/Cleanest-lakes-in-the-US.webp',
             }}
-            style={styles.logo}
+            style={styles.heroImage}
           />
+          <View style={styles.heroOverlay} />
+          <View style={styles.heroContent}>
+            <View style={styles.heroBadge}>
+              <Text style={styles.heroBadgeText}>LAKE ACTIVITY REPORTING</Text>
+            </View>
+            <Text style={styles.heroTitle}>H2O HERO</Text>
+            <Text style={styles.heroSubtitle}>
+              Protect the waterways in your community.
+            </Text>
+          </View>
+        </View>
+
+        <View style={styles.homeBody}>
+          <Text style={styles.homeIntro}>
+            Report problems in local rivers, lakes, and streams so your
+            community can see what needs attention.
+          </Text>
+
+          <View style={styles.stepsRow}>
+            {steps.map((step) => (
+              <View key={step.number} style={styles.stepTile}>
+                <View style={styles.stepNumber}>
+                  <Text style={styles.stepNumberText}>{step.number}</Text>
+                </View>
+                <Text style={styles.stepTileTitle}>{step.title}</Text>
+                <Text style={styles.stepTileText}>{step.text}</Text>
+              </View>
+            ))}
+          </View>
 
           <TouchableOpacity
             style={styles.initialButton}
             onPress={() => navigation.navigate('Report')}
           >
-            <Text style={styles.initialButtonText}>
-              Report Activity
-            </Text>
+            <Text style={styles.initialButtonText}>Report Activity</Text>
           </TouchableOpacity>
 
           <TouchableOpacity
             style={styles.secondaryButton}
             onPress={() => navigation.navigate('SeeReports')}
           >
-            <Text style={styles.secondaryButtonText}>
-              See Reports
-            </Text>
+            <Text style={styles.secondaryButtonText}>See Reports</Text>
           </TouchableOpacity>
         </View>
       </ScrollView>
@@ -939,19 +956,6 @@ const styles = StyleSheet.create({
   contentWrapper: {
     width: '100%',
   },
-  mainTitle: {
-    fontSize: 32,
-    fontWeight: 'bold',
-    color: systemwideColor,
-    backgroundColor: accentColor,
-    textAlign: 'center',
-    padding: 10,
-    borderWidth: 1,
-    borderColor: borderColor,
-    borderRadius: 8,
-    marginBottom: 15,
-    marginTop: 20,
-  },
   subTitle: {
     fontSize: 24,
     fontWeight: 'bold',
@@ -964,11 +968,104 @@ const styles = StyleSheet.create({
     lineHeight: 23,
     marginBottom: 15,
   },
-  logo: {
+  homeScroll: {
+    paddingBottom: 32,
+  },
+  hero: {
+    height: 320,
+    justifyContent: 'flex-end',
+    borderBottomLeftRadius: 28,
+    borderBottomRightRadius: 28,
+    overflow: 'hidden',
+  },
+  heroImage: {
+    ...StyleSheet.absoluteFillObject,
     width: '100%',
-    height: 220,
-    borderRadius: 10,
-    marginBottom: 25,
+    height: '100%',
+  },
+  heroOverlay: {
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: 'rgba(12, 13, 14, 0.55)',
+  },
+  heroContent: {
+    padding: 24,
+  },
+  heroBadge: {
+    alignSelf: 'flex-start',
+    backgroundColor: 'rgba(102, 217, 197, 0.18)',
+    borderRadius: 999,
+    paddingVertical: 5,
+    paddingHorizontal: 12,
+    marginBottom: 12,
+  },
+  heroBadgeText: {
+    color: accentColor,
+    fontSize: 11,
+    fontWeight: 'bold',
+    letterSpacing: 1.2,
+  },
+  heroTitle: {
+    color: textColor,
+    fontSize: 40,
+    fontWeight: '800',
+    letterSpacing: 1,
+  },
+  heroSubtitle: {
+    color: textColor,
+    fontSize: 16,
+    opacity: 0.85,
+    marginTop: 4,
+  },
+  homeBody: {
+    paddingHorizontal: 16,
+    paddingTop: 24,
+    width: '100%',
+    maxWidth: 640,
+    alignSelf: 'center',
+  },
+  homeIntro: {
+    color: secondaryTextColor,
+    fontSize: 16,
+    lineHeight: 24,
+    marginBottom: 20,
+  },
+  stepsRow: {
+    flexDirection: 'row',
+    gap: 10,
+    marginBottom: 28,
+  },
+  stepTile: {
+    flex: 1,
+    backgroundColor: containerColor,
+    borderWidth: 1,
+    borderColor: borderColor,
+    borderRadius: 14,
+    padding: 12,
+  },
+  stepNumber: {
+    width: 26,
+    height: 26,
+    borderRadius: 13,
+    backgroundColor: 'rgba(102, 217, 197, 0.15)',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginBottom: 10,
+  },
+  stepNumberText: {
+    color: accentColor,
+    fontSize: 13,
+    fontWeight: 'bold',
+  },
+  stepTileTitle: {
+    color: textColor,
+    fontSize: 15,
+    fontWeight: 'bold',
+    marginBottom: 4,
+  },
+  stepTileText: {
+    color: secondaryTextColor,
+    fontSize: 12,
+    lineHeight: 17,
   },
   initialButton: {
     minHeight: 50,

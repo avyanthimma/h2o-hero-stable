@@ -1,29 +1,31 @@
 {
   "expo": {
-    "name": "congressional-app-challenge-2026-27",
-    "slug": "snack-2505a699-8ef3-4c1b-8c61-c81de3d1eee4",
+    "name": "H2O Hero",
+    "slug": "h2o-hero",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/icon.png",
-    "userInterfaceStyle": "light",
+    "icon": "./icon.png",
+    "userInterfaceStyle": "dark",
     "newArchEnabled": true,
     "splash": {
-      "image": "./assets/splash-icon.png",
+      "image": "./splash-icon.png",
       "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
+      "backgroundColor": "#0C0D0E"
     },
     "ios": {
       "supportsTablet": true
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/adaptive-icon.png",
-        "backgroundColor": "#ffffff"
+        "foregroundImage": "./adaptive-icon.png",
+        "backgroundColor": "#0C0D0E"
       },
       "edgeToEdgeEnabled": true
     },
     "web": {
-      "favicon": "./assets/favicon.png"
+      "bundler": "metro",
+      "output": "single",
+      "favicon": "./favicon.png"
     }
   }
 }
