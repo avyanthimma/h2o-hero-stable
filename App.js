@@ -1,4 +1,3 @@
-
 import React, { useEffect, useRef, useState } from 'react';
 import {
   View,
@@ -28,6 +27,16 @@ const SUPABASE_KEY =
   'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBhbnpuYXFuaXVzeXJnbHlvemhuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTE2NzI0MjQsImV4cCI6MjEwNzI0ODQyNH0.sJFoujIyBpIjqwufbnPFyBTi8Mui8lXeUNZpQ50zzj4';
 
 const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
+
+// Alert.alert does nothing on web, so web uses the browser's alert box instead.
+function showMessage(title, message) {
+  if (Platform.OS === 'web') {
+    window.alert(message ? `${title}\n\n${message}` : title);
+    return;
+  }
+
+  Alert.alert(title, message);
+}
 
 const systemwideColor = '#0C0D0E';
 const containerColor = '#16191C';
@@ -285,8 +294,16 @@ function HomeScreen() {
 
         <View style={styles.homeBody}>
           <Text style={styles.homeIntro}>
-            Report problems in local rivers, lakes, and streams so your
-            community can see what needs attention.
+            I’m Avyan, the creator of H2O HERO. After noticing litter and
+            other environmental problems during walks through local parks
+            with my family, I wanted to do something about it. I created
+            H2O HERO to empower people to report pollution, protect our
+            waterways, and take responsibility for the environment we share.
+          </Text>
+
+          <Text style={styles.homeCallToAction}>
+            Our planet needs action, not just awareness. Join me in protecting
+            our Earth, one report, one action, and one waterway at a time.
           </Text>
 
           <View style={styles.stepsRow}>
@@ -344,7 +361,7 @@ function ReportScreen({ addReport }) {
       const asset = result.assets[0];
 
       if (!asset.base64) {
-        Alert.alert(
+        showMessage(
           'Photo Error',
           'The photo could not be read. Please try another image.'
         );
@@ -359,7 +376,7 @@ function ReportScreen({ addReport }) {
       ];
 
       if (!allowedTypes.includes(mimeType)) {
-        Alert.alert(
+        showMessage(
           'Unsupported Image',
           'Please choose a JPG, PNG, or WebP image.'
         );
@@ -367,7 +384,7 @@ function ReportScreen({ addReport }) {
       }
 
       if (asset.fileSize && asset.fileSize > 5 * 1024 * 1024) {
-        Alert.alert(
+        showMessage(
           'Image Too Large',
           'Choose an image smaller than 5 MB.'
         );
@@ -382,7 +399,7 @@ function ReportScreen({ addReport }) {
         setGps(coordinates);
         setGpsSource('photo');
 
-        Alert.alert(
+        showMessage(
           'GPS Location Found',
           `Latitude: ${coordinates.latitude.toFixed(6)}\n` +
             `Longitude: ${coordinates.longitude.toFixed(6)}\n\n` +
@@ -395,13 +412,13 @@ function ReportScreen({ addReport }) {
           setGpsSource(null);
         }
 
-        Alert.alert(
+        showMessage(
           'No GPS Metadata',
           'This photo has no usable GPS coordinates. You can select its location on the map.'
         );
       }
     } catch (error) {
-      Alert.alert(
+      showMessage(
         'Photo Error',
         error.message || 'Could not open the photo library.'
       );
@@ -417,7 +434,7 @@ function ReportScreen({ addReport }) {
     const description = reportText.trim();
 
     if (!description) {
-      Alert.alert(
+      showMessage(
         'Missing Description',
         'Please describe the problem first.'
       );
@@ -425,7 +442,7 @@ function ReportScreen({ addReport }) {
     }
 
     if (description.length > 2000) {
-      Alert.alert(
+      showMessage(
         'Description Too Long',
         'Keep your report under 2001 characters.'
       );
@@ -442,14 +459,14 @@ function ReportScreen({ addReport }) {
       setGps(null);
       setGpsSource(null);
 
-      Alert.alert(
+      showMessage(
         'Report Received',
         'Your report was saved to the community database.'
       );
 
       navigation.goBack();
     } catch (error) {
-      Alert.alert(
+      showMessage(
         'Submission Failed',
         error.message || 'Please try again.'
       );
@@ -867,13 +884,10 @@ export default function App() {
 
     if (insertError) throw insertError;
 
-    const loaded = await loadReports();
-
-    if (!loaded) {
-      throw new Error(
-        'The report was submitted, but the latest reports could not be refreshed.'
-      );
-    }
+    // The report is already saved here. If the refresh fails, loadReports()
+    // sets the error text on the reports screen, so do not report a failed
+    // submission (that would make the user resubmit a duplicate).
+    await loadReports();
   }
 
   async function toggleUpvote(reportId) {
@@ -885,7 +899,7 @@ export default function App() {
     );
 
     if (voteError) {
-      Alert.alert('Vote Failed', voteError.message);
+      showMessage('Vote Failed', voteError.message);
       return;
     }
 
@@ -1028,6 +1042,13 @@ const styles = StyleSheet.create({
     fontSize: 16,
     lineHeight: 24,
     marginBottom: 20,
+  },
+  homeCallToAction: {
+    color: textColor,
+    fontSize: 20,
+    fontWeight: '800',
+    lineHeight: 28,
+    marginBottom: 28,
   },
   stepsRow: {
     flexDirection: 'row',
